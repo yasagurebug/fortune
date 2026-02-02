@@ -15,6 +15,7 @@ const UID_KEY = "tonchiki_uid";
 const VARIANT_KEY = "tonchiki_variant";
 const VARIANT_DATE_KEY = "tonchiki_variant_date";
 const SHARE_HASHTAG = "#トンチキ占い";
+const SHARE_SITE_URL = "https://fortune-roan-two.vercel.app";
 
 function getOrCreateUid() {
   if (typeof window === "undefined") return "";
@@ -62,11 +63,6 @@ export default function FortuneClient() {
   const [variant, setVariant] = useState(0);
   const [shared, setShared] = useState(false);
   const [status, setStatus] = useState("");
-  const [origin, setOrigin] = useState("");
-
-  useEffect(() => {
-    setOrigin(window.location.origin);
-  }, []);
 
   useEffect(() => {
     const d = sanitizeDate(searchParams?.get("d"));
@@ -108,12 +104,12 @@ export default function FortuneClient() {
   }, [seed, variant]);
 
   const shareUrl = useMemo(() => {
-    if (!origin || !uid || !dateStr) return "";
-    return `${origin}${buildSharedQuery(dateStr, uid, variant)}`;
-  }, [origin, uid, dateStr, variant]);
+    if (!uid || !dateStr) return "";
+    return `${SHARE_SITE_URL}${buildSharedQuery(dateStr, uid, variant)}`;
+  }, [uid, dateStr, variant]);
 
   const shareText = fortune
-    ? `${SHARE_HASHTAG}`
+    ? `今日の占い ${SHARE_HASHTAG}\n${SHARE_SITE_URL}\n${shareUrl}`
     : "";
 
   const handleRegen = () => {
