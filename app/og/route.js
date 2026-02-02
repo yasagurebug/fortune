@@ -1,27 +1,22 @@
 import { ImageResponse } from "@vercel/og";
-import {
-  generateFortune,
-  getJstDateString,
-  makeSeed,
-  parseVariant,
-  sanitizeDate,
-  sanitizeUid,
-} from "../../lib/fortune";
 
 export const runtime = "edge";
 
-const fontData = fetch(
-  new URL("./ShipporiMincho-Regular.ttf", import.meta.url)
-).then((res) => res.arrayBuffer());
+function clampText(text, maxLength) {
+  if (!text) return "";
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength);
+}
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const dateStr = sanitizeDate(searchParams.get("d")) || getJstDateString();
-  const uid = sanitizeUid(searchParams.get("u")) || "guest";
-  const variant = parseVariant(searchParams.get("v"));
-  const seed = makeSeed(uid, dateStr);
-  const fortune = generateFortune(seed, variant);
-  const font = await fontData;
+  const rawText = searchParams.get("t");
+  const fortune = clampText(rawText?.trim() || "今日の占い", 2000);
+  const origin = new URL(request.url).origin;
+  const fontResponse = await fetch(
+    `${origin}/fonts/ShipporiMincho-Regular.ttf`
+  );
+  const font = await fontResponse.arrayBuffer();
 
   return new ImageResponse(
     (

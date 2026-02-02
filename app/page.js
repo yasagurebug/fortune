@@ -40,6 +40,7 @@ export function generateMetadata({ searchParams }) {
     ogUrl.searchParams.set("d", dateStr);
     ogUrl.searchParams.set("u", uid);
     ogUrl.searchParams.set("v", String(variant));
+    ogUrl.searchParams.set("t", fortune);
   }
 
   return {
