@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import FortuneClient from "./fortune-client";
 import {
   generateFortune,
@@ -68,7 +69,9 @@ export default function Page() {
         <h1>今日の占い</h1>
         <p className="lead">信じたり信じなかったりして今日も生きましょう</p>
       </header>
-      <FortuneClient />
+      <Suspense fallback={<div className="card">読み込み中...</div>}>
+        <FortuneClient />
+      </Suspense>
       <footer className="footer"></footer>
     </main>
   );
